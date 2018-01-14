@@ -1,0 +1,120 @@
+{% extends "base.html" %} {% load staticfiles %} {% block specific_head %}
+<title>CIOC</title>
+{% endblock %}
+{% block specific_css %}
+  <link href="{% static 'css/canvas.css' %}" rel="stylesheet">
+  <link href="{% static 'css/agency.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/animate.css' %}" charset="utf-8">
+{% endblock %}
+
+{% block header %}
+<nav class="navbar navbar-default navbar-fixed-top" style="background-color:#2d5391">
+  <!-- <div class="container"> -->
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header page-scroll" >
+    <label><h3 style="color:white">&nbsp;CIOC</h3></label>
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="dropdown pull-right">
+      <button class="dropbtn btn-lg dropdown dropdown-toggle pull-right" data-toggle="dropdown" style="width: 150px; ">Ankita Kadam<i class="fa fa-user pull-right"></i></button>
+      <ul class="dropdown-content dropdown-menu" style="margin-top: 0px;">
+        <li><a href="#"><img class="media-object img-circle " alt="90X90"  width="90" height="70" src="/static/images/team/1.jpg" ></a></li>
+        <li><a href="#">Profile  <i class="fa fa-user pull-right"></i></a></li>
+        <li class="divider"></li>
+        <li><a href="#">Sign Out <i class="fa fa-sign-out pull-right"></i></a></li>
+      </ul>
+    </div>
+</nav>
+
+{% endblock %}
+<!-- Header -->
+{% block content %}
+<div ng-app="app" ng-controller="main">
+  {% verbatim %}
+  <div class="container-fluid" style="padding-left:0px;padding-right:0px;">
+    <header style="background-color:#2d5391;height:10vh;width:100%;">
+      <!-- <header  style="background:rgb(29, 98, 180);height:100vh;"> -->
+       <div class="container" style="overflow:hidden;">
+        <div class="intro-text" style="text-align:center;">
+        <div class="intro-lead-in" style="font-size:100px;padding-right:53px;margin-top:-40px;"></div>
+          <!-- <div class="intro-heading" >Think Free</div> -->
+           <!-- <div class="btn1" style="padding-right: 40px;">
+            <a href="#services" class="page-scroll btn btn-xl">Tell Me More</a>
+          </div> -->
+        </div>
+      </div>
+    </header>
+  </div>
+  <div ng-controller="homepage.video">
+    <div class="row">
+      <div class="col-sm-9" style="margin-left: 0px;margin-right: -15px;">
+        <div class="row">
+          <div class="col-sm-12">
+         <div class="videoWrap">
+           <video autoplay controls preload  width="400" >
+              <source src="/static/videos/big_buck_bunny.ogv" type="video/ogg">
+            </video>
+                </div>
+                <br/>
+                <div class="container-fluid video-detail" style="padding-left:0px;padding-right:0px;box-shadow:0px; width:400" >
+              <h4 style="padding-left:50px">big_buck_bunny big_buck_bunny</h>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3" style="padding-left: 20px;margin-left: -20px;">
+        <div class="panel panel-default" style="width: 482px;margin-bottom:0px">
+           <div class="panel-heading" style="font-size:30px">Tutorial Videos for Students</div>
+             <div class="panel-body" style="padding: 0px;">
+               <h5  style="padding-left: 20px;">NOW PLAYING</h5>
+                 <div style="padding:20px;">
+                   <span class="change-icon not-selected ">
+                     <i class="fa fa-play-circle fa-3x"></i>
+                     <i class="fa fa-video-camera fa-3x"></i>
+                   </span>
+                   &nbsp;&nbsp;&nbsp;
+                   <spam style="font-size:20px">Video</spam>
+                 </div>
+                 <h5  style="padding-left: 20px;">COMING NEXT</h5>
+                 <ul class="list-group" ng-repeat="videos in videoplayer"  style="margin-bottom: 0px;">
+                   <a href="#" class="list-group-item">
+                     <span class="change-icon not-selected ">
+                       <i class="fa fa-play-circle fa-3x"></i>
+                       <i class="fa fa-video-camera fa-3x"></i>
+                       &nbsp;&nbsp;&nbsp;
+                       <spam style="font-size:20px">{{videos.detail}}</spam>
+                     </span>
+                   </a>
+                 </ul>
+               </div>
+             </div>
+           </div>
+          </div>
+        </div>
+
+  {% endverbatim %}
+  <!-- Services Section -->
+
+      {% endblock %} {% block footer %}
+      <h3 class="bg-grey">
+          <i class="fa fa-facebook-square fb-btn"></i>
+          <i class="fa fa-twitter-square twt-btn"></i>
+          <i class="fa fa-google-plus-square gp-btn"></i>
+          <spam class="pull-right">cioc.co.in</spam>
+      </h3>
+</div>
+
+{% endblock %}
+
+{% block specific_js %}
+<script src="{% static 'js/jquery.easing.min.js' %}"></script>
+<script src="{% static 'js/classie.js' %}"></script>
+<script src="{% static 'js/cbpAnimatedHeader.js' %}"></script>
+<script src="{% static 'js/agency.js' %}"></script>
+<script src="{% static 'js/angular.min.js' %}"></script>
+<script src="{% static 'js/angular-ui-router.min.js' %}"></script>
+<script src="{% static 'js/angular-sanitize.min.js' %}"></script>
+<script src="{% static 'js/app.homepage.js' %}"></script>
+ <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+
+{% endblock %}

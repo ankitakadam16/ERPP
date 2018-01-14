@@ -1,0 +1,155 @@
+{% extends "base.html" %} {% load staticfiles %} {% block specific_head %}
+<title>CIOC</title>
+{% endblock %}
+{% block specific_css %}
+  <link href="{% static 'css/video.css' %}" rel="stylesheet">
+  <link href="{% static 'css/agency.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/animate.css' %}" charset="utf-8">
+{% endblock %}
+
+{% block header %}
+
+
+{% endblock %}
+<!-- Header -->
+{% block content %}
+<div ng-app="app" ng-controller="main">
+  {% verbatim %}
+
+  <div ng-controller="homepage.canvas">
+  <div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2" style="padding-right: 0px;border-right:1px solid #428bca;height: 916px;" >
+       <img class="media-object center-block"  alt="90X90" style="width: 150px; height: 150px;border-radius:200px" src="/static/images/team/1.jpg">
+       <div class="progress" style="margin-bottom: 0px;">
+         <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
+           40%
+         </div>
+       </div>
+       <ul class="list-group" style="margin-bottom: 0px;height:780px">
+         <li class="list-group-item text-center">
+           <button type="button" class="btn btn-default" ng-click="pencil()" style="width:200px;"> <i class="fa fa-2x fa-{{editor.pencil?'pencil-square-o':'adn'}}"></i>  </button>
+         </li>
+         <li class="list-group-item text-center">
+           <button type="button" class="btn btn-default"  ng-click="save()"  style="width:200px;">
+             <i class="fa fa-floppy-o fa-2x"></i>
+           </button>
+         </li>
+         <li class="list-group-item text-center text-center">  <button type="button" class="btn btn-default"  ng-click="clearAll()"  style="width:200px;">
+             <i class="fa fa-trash fa-2x"></i>
+           </button>
+         </li>
+         <li class="list-group-item text-center" >
+           <label style="width:200px;" >
+             <input  type="file" id="file" class="file"/><i class="fa fa-file-image-o fa-2x"></i>
+           </label>
+         </li>
+         <li class="list-group-item text-center" ng-if="showTextOptions">
+           <div class="btn-group">
+             <button type="button" class="btn btn-default" ng-click="bold()"> <i class="fa fa-bold"></i></button>
+             <button type="button" class="btn btn-default" ng-click="italic()"> <i class="fa fa-italic"></i></button>
+             <button type="button" class="btn btn-default" ng-click="underline()"> <i class="fa fa-underline"></i></button>
+             <button type="button" class="btn btn-default" ng-click="rightalign()"> <i class="fa fa-align-right"></i></button>
+             <button type="button" class="btn btn-default" ng-click="leftalign()"> <i class="fa fa-align-left"></i></button>
+             <button type="button" class="btn btn-default" ng-click="centeralign()"> <i class="fa fa-align-justify"></i></button>
+             <button type="button" class="btn btn-default" ng-click="fontincrease()" id="fontincrease1"> <i class="fa fa-font"></i>++</button>
+             <button type="button" class="btn btn-default" ng-click="fontdecrease()"> <i class="fa fa-font"></i>--</button>
+         </div>
+       </li>
+       <li class="list-group-item text-center" >
+         <input type="color" ng-model="editor.color" style="width:200px;" id="color">
+       </li>
+        <li class="list-group-item" >
+          <select class="form-control text-center" ng-model="fontName">
+            <option value="Arial Black">Arial Black</option>
+            <option value = "Times New Roman" >Times New Roman</option>
+            <option value="Arial">Arial</option>
+            <option value="Comic Sans">Comic Sans</option>
+            <option value="Sans-serif">Sans-serif</option>
+            <option value="Monospace">Monospace</option>
+          </select>
+        </li>
+        <li class="list-group-item text-center" >
+          <button type="button" class="btn {{editor.rect? 'btn-primary' : 'btn-default'}}" ng-click="editor.rect = !editor.rect;" style="width:200px;">
+            <i class="fa fa-square-o fa-2x"></i>
+           </button>
+        </li>
+        <li class="list-group-item text-center" >
+         <button type="button"  class="btn {{editor.eraser? 'btn-primary' : 'btn-default'}}" ng-click="editor.eraser = !editor.eraser;eraserSmall();" style="width:200px;">
+           <i class="fa fa-eraser fa-2x"></i>
+         </button>
+        </li>
+        <li class="list-group-item" ng-if="editor.eraser" ng-model="eraser">
+         <div class="container-fluid">
+           <div class="col-md-4" style="{{editor.eraserSize == 1? 'background:#eeeeee;':''}}" ng-click="editor.eraserSize = 1;eraserSmall();">
+             <i class="fa fa-square"></i>
+           </div>
+           <div class="col-md-4" style="{{editor.eraserSize == 2? 'background:#eeeeee;':''}}" ng-click="editor.eraserSize = 2;eraserMedium();">
+             <i class="fa fa-square fa-2x"></i>
+           </div>
+           <div class="col-md-4" style="{{editor.eraserSize == 3? 'background:#eeeeee;':''}}" ng-click="editor.eraserSize = 3;eraserLarge();">
+             <i class="fa fa-square fa-3x"></i>
+           </div>
+         </div>
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-10" style="padding-left: 0px;padding-right: 0px;">
+      <nav class="navbar navbar-default" style="background-color:#2d5391;">
+        <!-- <div class="container"> -->
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header page-scroll" >
+          <label><h3 style="color:white">&nbsp;CIOC</h3></label>
+          </div>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="dropdown pull-right">
+            <button class="dropbtn btn-lg dropdown dropdown-toggle pull-right" data-toggle="dropdown" style="width: 150px; ">Ankita Kadam<i class="fa fa-user pull-right"></i></button>
+            <ul class="dropdown-content dropdown-menu" style="margin-top: 0px;">
+              <li><a href="#"><img class="media-object img-circle " alt="90X90"  width="90" height="70" src="/static/images/team/1.jpg" ></a></li>
+              <li><a href="#">Profile  <i class="fa fa-user pull-right"></i></a></li>
+              <li class="divider"></li>
+              <li><a href="#">Sign Out <i class="fa fa-sign-out pull-right"></i></a></li>
+            </ul>
+          </div>
+      </nav>
+       <div class="row">
+         <div class="col-md-12"  style="padding-right">
+           <canvas id="canvas" class="canvas"></canvas>
+         </div>
+        </div>
+     </div>
+   </div>
+ </div>
+</div>
+
+  {% endverbatim %}
+  <!-- Services Section -->
+
+      {% endblock %} {% block footer %}
+      <h3 class="bg-grey">
+          <i class="fa fa-facebook-square fb-btn"></i>
+          <i class="fa fa-twitter-square twt-btn"></i>
+          <i class="fa fa-google-plus-square gp-btn"></i>
+          <spam class="pull-right">cioc.co.in</spam>
+      </h3>
+</div>
+
+{% endblock %}
+
+{% block specific_js %}
+<script src="{% static 'js/jquery.easing.min.js' %}"></script>
+<script src="{% static 'js/classie.js' %}"></script>
+<script src="{% static 'js/cbpAnimatedHeader.js' %}"></script>
+<script src="{% static 'js/agency.js' %}"></script>
+<script src="{% static 'js/angular.min.js' %}"></script>
+<script src="{% static 'js/angular-ui-router.min.js' %}"></script>
+<script src="{% static 'js/angular-sanitize.min.js' %}"></script>
+<script src="{% static 'js/app.homepage.js' %}"></script>
+ <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+ <script src="{% static 'js/fabric.min.js' %}"></script>
+
+
+
+{% endblock %}

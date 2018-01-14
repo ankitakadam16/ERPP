@@ -1,7 +1,9 @@
 app.controller("controller.home.notes", function($scope , $state , $users ,  $stateParams , $http , Flash) {
   $scope.me = $users.get('mySelf');
-  $scope.editor = {pencil : false}
+  $scope.editor = {pencil : false , eraser:false , eraserSize: 1, rect : false , dragging : false , rectStartX : undefined, rectStartY : undefined,rectEndX : undefined, rectEndY : undefined , eraserStartX : undefined, eraserStartY : undefined , eraserEndX : undefined, eraserEndY : undefined , color:'#000000'}
+  // $scope.eraser={isPress : false , old : null , x : undefined, y : undefined}
   $scope.canvas = new fabric.Canvas('canvas');
+  fabric.Object.prototype.selectable = false;
   $scope.canvas.selection = true;
   $scope.canvas.isDrawingMode = false;
   $scope.fontName = 'Times New Roman';
@@ -25,6 +27,10 @@ app.controller("controller.home.notes", function($scope , $state , $users ,  $st
       $scope.changefont(newValue);
     }
   });
+
+
+
+
 
 
 
@@ -76,6 +82,8 @@ app.controller("controller.home.notes", function($scope , $state , $users ,  $st
     })
   }
 
+
+
   $scope.changeNotebook = function(index){
     $scope.bookInView = index;
   }
@@ -101,11 +109,13 @@ app.controller("controller.home.notes", function($scope , $state , $users ,  $st
   }
 
   $scope.pencil = function(){
-    $scope.canvas.isDrawingMode = !$scope.canvas.isDrawingMode;
-    $scope.editor.pencil = !$scope.editor.pencil;
-    $scope.showTextOptions = false;
-    $scope.showDeleteOption = false;
-    $scope.canvas.renderAll();
+      $scope.canvas.isDrawingMode = !$scope.canvas.isDrawingMode;
+      $scope.editor.pencil = !$scope.editor.pencil;
+      $scope.canvas.freeDrawingBrush.width = 1;
+      $scope.canvas.freeDrawingBrush.color = 'black';
+      $scope.showTextOptions = false;
+      $scope.showDeleteOption = false;
+      $scope.canvas.renderAll();
   }
 
   $scope.clearAll = function(){
@@ -167,17 +177,23 @@ app.controller("controller.home.notes", function($scope , $state , $users ,  $st
 
   $scope.canvas.on('mouse:down', function(options) {
 
-    if (!$scope.canvas.isDrawingMode && flag1==true){
+    if (!$scope.canvas.isDrawingMode && flag1==true && !$scope.editor.rect){
     //  console.log(options.e);
 
       $scope.addText(options.e);
       $scope.showTextOptions = true;
       $scope.showDeleteOption = true;
-
       $scope.canvas.renderAll();
+    }else if ($scope.editor.rect) {
+      if (options.target == undefined) {
+        $scope.editor.rectStartX = options.e.x;
+        $scope.editor.rectStartY = options.e.y;
+        $scope.editor.dragging = true;
       }
+    }
     $scope.canvas.renderAll();
   });
+
 
   window.addEventListener('resize', resizeCanvas, false);
 
@@ -218,12 +234,14 @@ app.controller("controller.home.notes", function($scope , $state , $users ,  $st
 //add image new
 
 document.getElementById('file').addEventListener("change", function (e) {
+  $scope.canvas.isDrawingMode = !$scope.canvas.isDrawingMode;
+    $scope.editor.pencil = !$scope.editor.pencil;
   var file = e.target.files[0];
   var reader = new FileReader();
   reader.onload = function (f) {
     var data = f.target.result;
     fabric.Image.fromURL(data, function (img) {
-      var oImg = img.set({left: 0, top: 0, angle: 00,width:200, height:200*(img.height/img.width)}).scale(0.9);
+      var oImg = img.set({left: 0, top: 0, angle: 00,  selectable: true,width:200, height:200*(img.height/img.width)}).scale(0.9);
       $scope.canvas.add(oImg).renderAll();
       var a = $scope.canvas.setActiveObject(oImg);
       var dataURL = $scope.canvas.toDataURL({format: 'png', quality: 0.8});
@@ -231,6 +249,14 @@ document.getElementById('file').addEventListener("change", function (e) {
   };
   reader.readAsDataURL(file);
 });
+
+
+
+
+// document.getElementById("erase").onchange = function () {
+// 	  $scope.canvas.isDrawingMode= this.checked ? "delete" : "add";
+//   console.warn(isDrawingMode);
+// };
 //text options
 $scope.bold = function() {
   if(obj.fontWeight != 'bold'){
@@ -314,11 +340,53 @@ if($scope.canvas.getActiveGroup()){
   }
 }
 
+
+
 //chage  fontFamily
 $scope.changefont = function(newValue){
   obj.fontFamily = newValue;
   $scope.canvas.renderAll();;
 }
+
+
+//display triangle
+$scope.canvas.on({
+   'mouse:move' : function(evnt) {
+     $scope.editor.rectEndX = evnt.e.x;
+     $scope.editor.rectEndY = evnt.e.y;
+   }, 'mouse:up' : function(evnt) {
+     if ($scope.editor.dragging) {
+       if ($scope.editor.rectStartX != undefined && $scope.editor.rectEndX != undefined) {
+         var rect=new fabric.Rect({
+             left:$scope.editor.rectStartX,
+             top:$scope.editor.rectStartY,
+             width:$scope.editor.rectEndX - $scope.editor.rectStartX,
+             height:$scope.editor.rectEndY - $scope.editor.rectStartY,
+             selectable: true,
+
+         });
+         $scope.canvas.add(rect);
+       }
+
+       $scope.editor.rectStartX = undefined;
+       $scope.editor.rectStartY = undefined;
+       $scope.editor.rectEndX = undefined;
+       $scope.editor.rectEndY = undefined;
+     }
+     $scope.editor.dragging = false;
+   }
+ })
+
+
+document.getElementById('color').addEventListener("change", function (e) {
+
+      $scope.canvas.freeDrawingBrush.color=this.value;
+
+ });
+
+
+
+
 
 // bullet points
 
@@ -341,10 +409,38 @@ $scope.changefont = function(newValue){
 //         }
 // }
 
+//change eraser size
+$scope.eraserSmall = function(){
+  $scope.canvas.isDrawingMode = !$scope.canvas.isDrawingMode;
+      $scope.canvas.freeDrawingBrush.width = 3;
+      $scope.canvas.freeDrawingBrush.color = 'white';
+        $scope.canvas.renderAll();
+
+  }
+  $scope.eraserMedium = function(){
+
+    $scope.canvas.isDrawingMode = !$scope.canvas.isDrawingMode;
+       $scope.canvas.freeDrawingBrush.width = 10;
+        $scope.canvas.freeDrawingBrush.color = 'white';
+          $scope.canvas.renderAll();
+    }
+
+    $scope.eraserLarge = function(){
+      $scope.canvas.isDrawingMode = !$scope.canvas.isDrawingMode;
+         $scope.canvas.freeDrawingBrush.width = 25;
+          $scope.canvas.freeDrawingBrush.color = 'white';
+            $scope.canvas.renderAll();
+
+      }
+
 
 //change text color
-document.getElementById("text-color").onchange = function() {
-          $scope.canvas.getActiveObject().setFill(this.value);
-          $scope.canvas.renderAll();
-      };
+$scope.$watch('editor.color' , function(newVal) {
+  $scope.canvas.getActiveObject().setFill(this.value);
+  $scope.canvas.renderAll();
+
+})
+
+
+
 });

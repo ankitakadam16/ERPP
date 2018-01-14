@@ -1,0 +1,26 @@
+<div class="modal-header">
+  <h3 class="modal-title" ng-if="mode == 'edit'">Edit cost center : <strong>{{data.name}}</strong></h3>
+  <h3 class="modal-title" ng-if="mode == 'new'">Create a new cost center</h3>
+</div>
+
+<div ng-controller="businessManagement.finance.accounts.form">
+  <div class="modal-body" >
+    <div class="container-fluid" ng-if="mode == 'new'">
+      <user-field url="/api/HR/userSearch/" user="form.user" label = "Person in charge" data="form.authorizedSignaturies"></user-field>
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" class="form-control" ng-model="form.name">
+      </div>
+      <div class="form-group">
+        <label>Code</label>
+        <input type="text " class="form-control" ng-model="form.code">
+      </div>
+      <div class="form-group">
+        <label>Account</label>
+        <input type="text " class="form-control" ng-model="form.account">
+      </div>
+
+      <button type="button" class="btn btn-primary pull-right" >Save</button>
+    </div>
+  </div>
+</div>
